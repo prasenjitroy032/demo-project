@@ -22,37 +22,46 @@ module "autoscaling" {
 }
 
 # 3. Create Web Server Instance
-module "web_server" {
-  source = "./modules/web_server"
-  vpc_id = module.vpc.vpc_id
-}
+#module "web_server" {
+#  source = "./modules/web_server"
+#  vpc_id = module.vpc.vpc_id
+#}
 
 # 4. Change Default Web Server TCP Port
-resource "aws_security_group_rule" "web_server_port" {
-  security_group_id = module.web_server.security_group_id
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
+#resource "aws_security_group_rule" "web_server_port" {
+#  security_group_id = module.web_server.security_group_id
+#  type              = "ingress"
+#  from_port         = 8080
+#  to_port           = 8080
+#  protocol          = "tcp"
+#  cidr_blocks       = ["0.0.0.0/0"]
+#}
 
 # 5. Create Load Balancer and Point to Web Server
 module "load_balancer" {
-  source      = "./modules/load_balancer"
-  vpc_id      = module.vpc.vpc_id
-  target_port = 8080
+  source        = "./modules/load_balancer"
+  vpc_id        = module.vpc.vpc_id
+  subnet_ids    = module.vpc.public_subnet_ids
+  target_port   = 8080
+  listener_port = 80
+}
+
+
+# Create a new ALB Target Group attachment
+resource "aws_autoscaling_attachment" "example" {
+  autoscaling_group_name = module.autoscaling.autoscaling_group_id
+  lb_target_group_arn    = module.load_balancer.target_group_arn
 }
 
 # 6. Open TCP Port 80 on Security Group
-resource "aws_security_group_rule" "load_balancer_port" {
-  security_group_id = module.load_balancer.security_group_id
-  type              = "ingress"
-  from_port         = 80
-  to_port           = 80
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-}
+#esource "aws_security_group_rule" "load_balancer_port" {
+#  security_group_id = module.load_balancer.security_group_id
+#  type              = "ingress"
+#  from_port         = 80
+#  to_port           = 80
+#  protocol          = "tcp"
+#  cidr_blocks       = ["0.0.0.0/0"]
+#}
 
 # 7. Create IAM User and Grant Restart Web Server Access
 resource "aws_iam_user" "web_server_user" {
