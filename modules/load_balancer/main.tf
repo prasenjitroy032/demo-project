@@ -62,3 +62,8 @@ resource "aws_security_group_attachment" "lb_attachment" {
   security_group_id = aws_security_group.lb_security_group.id
   resource_id       = aws_lb.main.id
 }
+
+resource "aws_autoscaling_attachment" "attach_lb" {
+  autoscaling_group_name = module.autoscaling.autoscaling_group_name
+  alb_target_group_arn   = aws_lb_target_group.main.arn
+}

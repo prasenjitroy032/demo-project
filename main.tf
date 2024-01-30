@@ -7,18 +7,21 @@ provider "aws" {
 # 1. Create VPC, Internet Gateway, and Routes
 module "vpc" {
   source             = "./modules/vpc"
-  cidr               = "10.0.0.0/16" # Replace with your desired CIDR
+  vpc_cidr           = "10.0.0.0/16" # Replace with your desired CIDR
+  vpc_name           = "my-vpc"
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"] 
 }
 
 # 2. Create Auto Scaling Group
 module "autoscaling" {
   source            = "./modules/autoscaling"
-  vpc_id            = module.vpc.vpc_id
-  key_name          = test-linux
+  desired_capacity  = 2
+  key_name          = "test-linux"
   min_size          = 1
   max_size          = 3
-  public_subnet_ids = module.vpc.public_subnet_ids
+  private_subnet_ids = module.vpc.private_subnet_ids
 }
 
 # 3. Create Web Server Instance
@@ -47,11 +50,6 @@ module "load_balancer" {
 }
 
 
-# Create a new ALB Target Group attachment
-resource "aws_autoscaling_attachment" "example" {
-  autoscaling_group_name = module.autoscaling.autoscaling_group_id
-  lb_target_group_arn    = module.load_balancer.target_group_arn
-}
 
 # 6. Open TCP Port 80 on Security Group
 #esource "aws_security_group_rule" "load_balancer_port" {
