@@ -12,7 +12,6 @@ data "aws_ami" "latest_amazon_linux" {
 
 resource "aws_launch_template" "main" {
   name                   = "web-server-launch-template"
-  version                = "$Latest"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.instance.id]
 

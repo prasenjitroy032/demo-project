@@ -13,7 +13,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_security_group" "lb_security_group" {
-  vpc_id = var.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   # Allow all traffic on port 80
   ingress {
@@ -65,5 +65,5 @@ resource "aws_security_group_attachment" "lb_attachment" {
 
 resource "aws_autoscaling_attachment" "attach_lb" {
   autoscaling_group_name = module.autoscaling.autoscaling_group_name
-  alb_target_group_arn   = aws_lb_target_group.main.arn
+  lb_target_group_arn    = aws_lb_target_group.main.arn
 }

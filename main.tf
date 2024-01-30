@@ -43,7 +43,6 @@ module "autoscaling" {
 # 5. Create Load Balancer and Point to Web Server
 module "load_balancer" {
   source        = "./modules/load_balancer"
-  vpc_id        = module.vpc.vpc_id
   subnet_ids    = module.vpc.public_subnet_ids
   target_port   = 8080
   listener_port = 80
