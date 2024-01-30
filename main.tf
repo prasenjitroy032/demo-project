@@ -6,30 +6,35 @@ provider "aws" {
 
 # 1. Create VPC, Internet Gateway, and Routes
 module "vpc" {
-  source = "./modules/vpc"
-  cidr   = "10.0.0.0/16" # Replace with your desired CIDR
+  source             = "./modules/vpc"
+  cidr               = "10.0.0.0/16" # Replace with your desired CIDR
+  availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
 # 2. Create Auto Scaling Group
 module "autoscaling" {
-  source  = "./modules/autoscaling"
-  vpc_id  = module.vpc.vpc_id
+  source            = "./modules/autoscaling"
+  vpc_id            = module.vpc.vpc_id
+  key_name          = test-linux
+  min_size          = 1
+  max_size          = 3
+  public_subnet_ids = module.vpc.public_subnet_ids
 }
 
 # 3. Create Web Server Instance
 module "web_server" {
-  source  = "./modules/web_server"
-  vpc_id  = module.vpc.vpc_id
+  source = "./modules/web_server"
+  vpc_id = module.vpc.vpc_id
 }
 
 # 4. Change Default Web Server TCP Port
 resource "aws_security_group_rule" "web_server_port" {
   security_group_id = module.web_server.security_group_id
-  type             = "ingress"
-  from_port        = 8080
-  to_port          = 8080
-  protocol         = "tcp"
-  cidr_blocks      = ["0.0.0.0/0"]
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 # 5. Create Load Balancer and Point to Web Server
@@ -42,11 +47,11 @@ module "load_balancer" {
 # 6. Open TCP Port 80 on Security Group
 resource "aws_security_group_rule" "load_balancer_port" {
   security_group_id = module.load_balancer.security_group_id
-  type             = "ingress"
-  from_port        = 80
-  to_port          = 80
-  protocol         = "tcp"
-  cidr_blocks      = ["0.0.0.0/0"]
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 # 7. Create IAM User and Grant Restart Web Server Access
@@ -62,8 +67,8 @@ resource "aws_iam_policy" "restart_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow",
-        Action = ["ec2:RebootInstances"],
+        Effect   = "Allow",
+        Action   = ["ec2:RebootInstances"],
         Resource = ["*"],
       },
     ],
