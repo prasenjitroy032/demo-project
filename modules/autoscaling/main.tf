@@ -25,17 +25,10 @@ resource "aws_launch_template" "main" {
 
   image_id = data.aws_ami.latest_amazon_linux.id
 
-  user_data = <<-EOF
-              #!/bin/bash
-              yum install -y httpd
-              sed -i 's/Listen 80/Listen 8080/g' /etc/httpd/conf/httpd.conf
-              systemctl restart httpd
-              systemctl enable httpd
-              EOF
+  user_data = filebase64("${path.module}/linux.sh")
 
   key_name = var.key_name
 
-  # Add other configuration settings for your launch template
 }
 
 resource "aws_autoscaling_group" "main" {
