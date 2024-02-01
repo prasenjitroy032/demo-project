@@ -1,6 +1,6 @@
 #!/bin/bash
-yum install -y httpd
-sed -i 's/Listen 80/Listen 8080/g' /etc/httpd/conf/httpd.conf
-systemctl restart httpd
-systemctl enable httpd
-
+yum install -y ansible git
+git clone https://github.com/prasenjitroy032/demo-project.git /tmp/ansible-repo
+echo '[localhost]' > /etc/ansible/hosts
+echo 'localhost ansible_connection=local' >> /etc/ansible/hosts
+ansible-playbook  /tmp/ansible-repo/ansible_httpd.yml
