@@ -32,6 +32,8 @@ resource "aws_lb_target_group" "main" {
   port        = var.target_port
   protocol    = "HTTP"
   target_type = "instance"
+  vpc_id      = var.vpc_id
+
 
   health_check {
     interval            = 30
@@ -60,6 +62,7 @@ resource "aws_lb_listener" "main" {
 }
 
 resource "aws_autoscaling_attachment" "attach_lb" {
-  autoscaling_group_name = module.autoscaling.autoscaling_group_name
+  #updated
+  autoscaling_group_name = var.autoscaling_group_name
   lb_target_group_arn    = aws_lb_target_group.main.arn
 }
