@@ -1,0 +1,26 @@
+# configure_httpd.yml
+
+---
+- name: Install and configure httpd
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Install httpd
+      package:
+        name: httpd
+        state: present
+
+    - name: Update Listen port in httpd.conf
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen '
+        line: 'Listen 8080
+      notify:
+        - Restart httpd     
+        
+  handlers:
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
