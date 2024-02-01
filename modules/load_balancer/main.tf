@@ -10,10 +10,11 @@ resource "aws_lb" "main" {
 
   enable_http2                     = true
   enable_cross_zone_load_balancing = true
+  security_groups                  = [aws_security_group.lb_security_group.id]
 }
 
 resource "aws_security_group" "lb_security_group" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.vpc_id
 
   # Allow all traffic on port 80
   ingress {
@@ -56,11 +57,6 @@ resource "aws_lb_listener" "main" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.main.arn
   }
-}
-
-resource "aws_security_group_attachment" "lb_attachment" {
-  security_group_id = aws_security_group.lb_security_group.id
-  resource_id       = aws_lb.main.id
 }
 
 resource "aws_autoscaling_attachment" "attach_lb" {

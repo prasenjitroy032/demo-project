@@ -56,14 +56,12 @@ resource "aws_route_table" "private" {
 
 
 resource "aws_nat_gateway" "private" {
-  count         = length(aws_subnet.private)
-  allocation_id = aws_eip.public[count.index].id
-  subnet_id     = aws_subnet.public[count.index].id
+  allocation_id = aws_eip.public.id
+  subnet_id     = aws_subnet.public[0].id
   depends_on    = [aws_internet_gateway.main]
 }
 
 resource "aws_eip" "public" {
-  count = length(aws_subnet.private)
 }
 
 resource "aws_internet_gateway" "main" {

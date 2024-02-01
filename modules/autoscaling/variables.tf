@@ -24,5 +24,15 @@ variable "key_name" {
   type        = string
 }
 
+variable "lb_tg_arn" {
+  description = "ARN of the target group associated with the load balancer"
+  type        = string
+}
+
+variable "lb_sg" {
+  description = "ID of the security group associated with the load balancer"
+  type        = string
+}
+
 
 # Add other variables as needed

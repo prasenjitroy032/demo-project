@@ -15,3 +15,14 @@ variable "listener_port" {
   type        = number
 }
 
+variable "vpc_id" {
+  description = "vpc id"
+  type        = string
+}
+
+variable "autoscaling_group_name" {
+  description = "autoscaling_group_name"
+  type        = string
+}
+
+

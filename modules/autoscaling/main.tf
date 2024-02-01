@@ -49,7 +49,8 @@ resource "aws_autoscaling_group" "main" {
   vpc_zone_identifier = var.private_subnet_ids
   health_check_type   = "ELB"
   target_group_arns = [
-    module.load_balancer.target_group_arn,
+    #module.load_balancer.target_group_arn,
+    var.lb_tg_arn
   ]
 }
 
@@ -57,9 +58,10 @@ resource "aws_security_group" "instance" {
   vpc_id = module.vpc.vpc_id
 
   ingress {
-    from_port       = 8080
-    to_port         = 8080
-    protocol        = "tcp"
-    security_groups = [module.load_balancer.lb_security_group.id]
+    from_port = 8080
+    to_port   = 8080
+    protocol  = "tcp"
+    #security_groups = [module.load_balancer.lb_security_group.id]
+    security_groups = [var.lb_sg]
   }
 }

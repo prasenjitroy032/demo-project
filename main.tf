@@ -22,6 +22,8 @@ module "autoscaling" {
   min_size          = 1
   max_size          = 3
   private_subnet_ids = module.vpc.private_subnet_ids
+  lb_tg_arn = module.load_balancer.target_group_arn
+  lb_sg = module.load_balancer.lb_security_group
 }
 
 # 3. Create Web Server Instance
@@ -46,6 +48,8 @@ module "load_balancer" {
   subnet_ids    = module.vpc.public_subnet_ids
   target_port   = 8080
   listener_port = 80
+  vpc_id = module.vpc.vpc_id
+  autoscaling_group_name = module.autoscaling.autoscaling_group_name
 }
 
 
