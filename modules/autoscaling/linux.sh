@@ -1,6 +1,6 @@
 #!/bin/bash
 yum install -y git
-pip install ansible
+pip3 install ansible
 git clone https://github.com/prasenjitroy032/demo-project.git /tmp/ansible-repo
 mkdir -p  /etc/ansible
 touch /etc/ansible/hosts
