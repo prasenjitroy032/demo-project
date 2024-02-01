@@ -6,24 +6,25 @@ provider "aws" {
 
 # 1. Create VPC, Internet Gateway, and Routes
 module "vpc" {
-  source             = "./modules/vpc"
-  vpc_cidr           = "10.0.0.0/16" # Replace with your desired CIDR
-  vpc_name           = "my-vpc"
-  availability_zones = ["us-east-1a", "us-east-1b"]
-  public_subnet_cidrs   = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnet_cidrs  = ["10.0.3.0/24", "10.0.4.0/24"] 
+  source               = "./modules/vpc"
+  vpc_cidr             = "10.0.0.0/16" # Replace with your desired CIDR
+  vpc_name             = "my-vpc"
+  availability_zones   = ["us-east-1a", "us-east-1b"]
+  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnet_cidrs = ["10.0.3.0/24", "10.0.4.0/24"]
 }
 
 # 2. Create Auto Scaling Group
 module "autoscaling" {
-  source            = "./modules/autoscaling"
-  desired_capacity  = 2
-  key_name          = "test-linux"
-  min_size          = 1
-  max_size          = 3
+  source             = "./modules/autoscaling"
+  desired_capacity   = 2
+  key_name           = "test-linux"
+  min_size           = 1
+  max_size           = 3
   private_subnet_ids = module.vpc.private_subnet_ids
-  lb_tg_arn = module.load_balancer.target_group_arn
-  lb_sg = module.load_balancer.lb_security_group
+  lb_tg_arn          = module.load_balancer.target_group_arn
+  lb_sg              = module.load_balancer.lb_security_group
+  vpc_id             = module.vpc.vpc_id
 }
 
 # 3. Create Web Server Instance
@@ -44,11 +45,11 @@ module "autoscaling" {
 
 # 5. Create Load Balancer and Point to Web Server
 module "load_balancer" {
-  source        = "./modules/load_balancer"
-  subnet_ids    = module.vpc.public_subnet_ids
-  target_port   = 8080
-  listener_port = 80
-  vpc_id = module.vpc.vpc_id
+  source                 = "./modules/load_balancer"
+  subnet_ids             = module.vpc.public_subnet_ids
+  target_port            = 8080
+  listener_port          = 80
+  vpc_id                 = module.vpc.vpc_id
   autoscaling_group_name = module.autoscaling.autoscaling_group_name
 }
 
