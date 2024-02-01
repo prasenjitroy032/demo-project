@@ -17,8 +17,7 @@
         regexp: '^Listen '
         line: 'Listen 8080
       notify:
-        - Restart httpd     
-        
+        - Restart httpd
   handlers:
     - name: Restart httpd
       service:
