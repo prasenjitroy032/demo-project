@@ -15,9 +15,10 @@
       lineinfile:
         path: /etc/httpd/conf/httpd.conf
         regexp: '^Listen '
-        line: 'Listen 8080
+        line: 'Listen 8080'
       notify:
         - Restart httpd
+  
   handlers:
     - name: Restart httpd
       service:
