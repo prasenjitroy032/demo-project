@@ -55,7 +55,7 @@ resource "aws_autoscaling_group" "main" {
 }
 
 resource "aws_security_group" "instance" {
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port = 8080

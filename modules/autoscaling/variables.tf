@@ -34,5 +34,11 @@ variable "lb_sg" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "vpc id"
+  type        = string
+}
+
+
 
 # Add other variables as needed
