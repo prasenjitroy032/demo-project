@@ -57,4 +57,18 @@ resource "aws_security_group" "instance" {
     #security_groups = [module.load_balancer.lb_security_group.id]
     security_groups = [var.lb_sg]
   }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
