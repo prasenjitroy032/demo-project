@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_CREDENTIALS_ID = 'AWS_Credentials_ID'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    git 'https://github.com/prasenjitroy032/demo-project.git'
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                script {
+                    sh 'terraform init'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                        credentialsId: AWS_CREDENTIALS_ID
+                    ]]) {
+                        sh 'terraform apply -auto-approve'
+                    }
+                }
+            }
+        }
+    }
+
+}
