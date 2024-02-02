@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    git 'https://github.com/prasenjitroy032/demo-project.git'
+                    git url: 'https://github.com/prasenjitroy032/demo-project.git', branch: 'your-branch-name'
                 }
             }
         }
