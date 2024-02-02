@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_CREDENTIALS_ID = 'AWS_Credentials_ID'
+        AWS_CREDENTIALS_ID = credentials('AWS_Credentials_ID')
     }
 
     stages {
